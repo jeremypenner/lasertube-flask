@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+{% block body %}
+  {% if session.logged_in %}
+    <form action="{{ url_for('add_disc') }}" method=post class=add-entry>
+      <dl>
+        <dt>Title:
+        <dd><input type=text size=30 name=title>
+        <dt>URL:
+        <dd><input type=text size=80 name=url>
+        <dt>Type:
+        <dd><input type=radio name=ktube value='yt'>YouTube</input>
+        <dd><input type=radio name=ktube value='flv'>FLV</input>
+        <dd><input type=submit value=Add>
+      </dl>
+    </form>
+  {% endif %}
+  <ul class=entries>
+  {% for entry in entries %}
+    <li><h2>{{ entry.title }}</h2> (<a href="{{ url_for('disc_play', id=entry.id) }}">play</a>{% if fShowEdit %} | <a href="{{ url_for('disc_edit', id=entry.id) }}">edit</a>{% endif %})
+  {% else %}
+    <li><em>Unbelievable.  No entries here so far</em>
+  {% endfor %}
+  </ul>
+{% endblock %}
