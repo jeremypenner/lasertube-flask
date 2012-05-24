@@ -117,9 +117,24 @@ def disc_json(id):
     disc = g.db.query(models.Disc).filter_by(id=id).one()
     return json.dumps(models.toJso(disc))
 
-@app.route('/disc/<int:id>/edit/')
+@app.route('/disc/<int:id>/edit/', methods=['GET', 'POST'])
 @requires_login
 def disc_edit(id):
+    if request.method == 'POST':
+        try:
+            jsoDisc = json.loads(request.form['jsonNew'])
+            if 'qtes' in jsoDisc:
+                g.db.query(models.Qte).filter(models.Qte.disc_id == id).delete()
+                for jsoQte in jsoDisc['qtes']:
+                    qte = models.fromJso(jsoQte, models.Qte)
+                    qte.disc_id = id
+                    g.db.add(qte)
+                g.db.commit()
+            else:
+                raise Exception("Invalid json")
+        except:
+            g.db.rollback()
+            flask.flash("Could not parse json")
     return render_disc(id, urlPostQte=flask.url_for('edit_qte', id=id, _external=True), csrf=create_session(id).guid)
 
 @app.route('/disc/<int:id>/qte/', methods=['POST'])

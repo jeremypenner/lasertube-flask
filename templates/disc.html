@@ -41,4 +41,12 @@
         src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" 
         alt="Get Adobe Flash player" /></a></p>
 </div>
+{% if 'urlPostQte' in flashvars %}
+<form method="POST">
+    <textarea rows="5" name="jsonNew">
+{{ flashvars['jsonDisc'] }}
+    </textarea>
+    <input type="submit" value="edit game"/>
+</form>
+{% endif %}
 {% endblock %}
